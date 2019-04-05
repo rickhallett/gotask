@@ -14,8 +14,30 @@ type User struct {
 	Email string `json:"email"`
 }
 
-// UserDB can act as a mock user DB table until one is created
-var UserDB []User
+// DB can act as a mock DB until one is created
+type DB struct{
+	User []*User
+}
+
+// VDB Virtual Database
+var VDB DB
+
+func (db *DB) initDB(){
+	VDB.User = []*User{}
+}
+
+func (db *DB) insertUser(u *User) {
+	db.User = append(db.User, u)
+	for i, u := range db.User {
+		fmt.Printf("id: %v, user: %+v\n", i, u)
+	}
+}
+
+// Mock database global storage
+func init(){
+	VDB = DB{}
+	VDB.initDB()
+}
 
 func main() {
 	e := echo.New()
@@ -23,6 +45,7 @@ func main() {
 	e.POST("/register", register)
 
 	e.Logger.Fatal(e.Start(":1323"))
+
 }
 
 func indexHandler(c echo.Context) error {
@@ -34,8 +57,10 @@ func register(c echo.Context) error {
 	if err := c.Bind(u); err != nil {
 		return err
 	}
-
+	
+	VDB.insertUser(u)
 	return c.JSON(http.StatusCreated, u)
 }
+
 
 
