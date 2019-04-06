@@ -5,32 +5,51 @@ import (
 	"net/http"
 	"strconv"
 
-	// "gotask/models"
+	"gotask/models"
 
 	"github.com/labstack/echo"
 )
 
+// H ...
 type H map[string]interface{}
 
+// GetTasks ...
 func GetTasks(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "GET Tasks")
+		return c.JSON(http.StatusOK, models.GetTasks(db))
 	}
 }
 
+// PutTask ...
 func PutTask(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusCreated, H{
-			"created": "yup",
-		})
+		var task models.Task
+		c.Bind(&task)
+
+		id, err := models.PutTask(db, task.Name)
+		if err != nil {
+			panic(err)
+		} else {
+			return c.JSON(http.StatusCreated, H{
+				"created": id,
+			})
+		}
+		
 	}
 }
 
+// DeleteTask ...
 func DeleteTask(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-        id, _ := strconv.Atoi(c.Param("id"))
-        return c.JSON(http.StatusOK, H{
-            "deleted": id,
-        })
+		id, _ := strconv.Atoi(c.Param("id"))
+		_, err := models.DeleteTask(db, id)
+		if err != nil {
+			panic(err)
+		} else {
+			return c.JSON(http.StatusOK, H{
+            	"deleted": id,
+        	})
+		}
+        
     }
 }
