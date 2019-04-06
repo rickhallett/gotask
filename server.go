@@ -16,10 +16,10 @@ func main() {
 	db := initDB("gotask.db")
 	migrate(db)
 
-	e.GET("/", indexHandler)
-	e.GET("/tasks", getTasks)
-    e.PUT("/tasks", putTask)
-    e.DELETE("/tasks/:id", deleteTask)
+	e.File("/", "public/index.html")
+	e.GET("/tasks", handlers.GetTasks(db))
+    e.PUT("/tasks", handlers.putTask(db))
+    e.DELETE("/tasks/:id", handlers.deleteTask(db))
 
 	e.Logger.Fatal(e.Start(":8888"))
 
@@ -50,21 +50,5 @@ func migrate(db *sql.DB) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func indexHandler(c echo.Context) error {
-	return c.String(http.StatusOK, "Welcome to GoTask!")
-}
-
-func getTasks(c echo.Context) error {
-	return c.JSON(200, "GET Tasks")
-}
-
-func putTask(c echo.Context) error {
-	return c.JSON(200, "PUT Tasks")
-}
-
-func deleteTask(c echo.Context) error {
-	return c.JSON(200, "DELETE Task "+c.Param("id"))
 }
 
