@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 	"strconv"
+	"fmt"
 
 	"gotask/models"
 
@@ -30,6 +31,7 @@ func PutTask(db *sql.DB) echo.HandlerFunc {
 		if err != nil {
 			panic(err)
 		} else {
+			fmt.Printf("Task %v created: %s\n", id, task.Name)
 			return c.JSON(http.StatusCreated, H{
 				"created": id,
 			})
@@ -42,6 +44,7 @@ func PutTask(db *sql.DB) echo.HandlerFunc {
 func DeleteTask(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, _ := strconv.Atoi(c.Param("id"))
+		// TODO: DeleteTask needs to only return deleted message if a todo that existed was deleted.
 		_, err := models.DeleteTask(db, id)
 		if err != nil {
 			panic(err)

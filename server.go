@@ -14,22 +14,16 @@ import (
 func main() {
 	e := echo.New()
 
-	DefaultCORSConfig := middleware.CORSConfig{
+	allowCORSConfig := middleware.CORSConfig{
   		AllowOrigins: []string{"http://localhost:8080"},
   		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
 	}
 
-	// e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-  	// 	AllowOrigins: []string{"https://labstack.com", "https://labstack.net"},
-  	// 	AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	// }))
-
-	e.Use(middleware.CORSWithConfig(DefaultCORSConfig))
+	e.Use(middleware.CORSWithConfig(allowCORSConfig))
 
 	db := initDB("gotask.db")
 	migrate(db)
 
-	// e.File("/", "public/index.html")
 	e.GET("/tasks", handlers.GetTasks(db))
     e.PUT("/tasks", handlers.PutTask(db))
     e.DELETE("/tasks/:id", handlers.DeleteTask(db))
