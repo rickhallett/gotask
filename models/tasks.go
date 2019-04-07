@@ -44,13 +44,13 @@ func PutTask(db *sql.DB, name string) (int64, error) {
 	sql := "INSERT INTO tasks(name) VALUES(?)"
 	stmt, err := db.Prepare(sql)
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
 	defer stmt.Close()
 
 	result, execErr := stmt.Exec(name)
 	if execErr != nil {
-		panic(execErr)
+		return 0, execErr
 	}
 
 	return result.LastInsertId()
@@ -61,13 +61,13 @@ func DeleteTask(db *sql.DB, id int) (int64, error) {
 	sql := "DELETE FROM tasks WHERE id = ?"
 	stmt, err := db.Prepare(sql)
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
 	defer stmt.Close()
 
 	result, execErr := stmt.Exec(id)
 	if execErr != nil {
-		panic(execErr)
+		return 0, execErr
 	}
 
 	return result.RowsAffected()
