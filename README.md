@@ -4,6 +4,8 @@ Users need to register
 • Users need to login
 • Users cannot login until confirmed
 • Users need to confirm Registration via email (use mailinator.com)
+ - Todo lists are protected via auth
+ - Deploy application to one server that configures nginx to serve the public SPA files and run the Go API from the same host
 • To-dos can have subtasks
 • All data needs to be validated (UI and backend)
 • Users to be notified on creation or updates to tasks
